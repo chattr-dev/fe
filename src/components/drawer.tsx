@@ -17,6 +17,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuth0 } from "@auth0/auth0-react";
+import { User } from "@auth0/auth0-spa-js";
 
 const drawerWidth = 240;
 
@@ -89,7 +90,10 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-export default function MiniDrawer(props: { children: JSX.Element }) {
+export default function MiniDrawer(props: {
+  children: JSX.Element;
+  user: Partial<User> | undefined;
+}) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
   const { logout } = useAuth0();
@@ -119,8 +123,11 @@ export default function MiniDrawer(props: { children: JSX.Element }) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
+          <Typography style={{ flex: 1 }} variant="h6" noWrap component="div">
             Fringed Lizard Consulting
+          </Typography>
+          <Typography variant="body1" noWrap component="div">
+            {props?.user?.email}
           </Typography>
         </Toolbar>
       </AppBar>

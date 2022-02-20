@@ -1,23 +1,30 @@
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import React, { Suspense, lazy } from "react";
-import { withAuthenticationRequired } from "@auth0/auth0-react";
+import React, { Suspense, lazy, useEffect } from "react";
+import { withAuthenticationRequired, useAuth0 } from "@auth0/auth0-react";
 import MiniDrawer from "./components/drawer";
 
 const Member = lazy(() => import("./pages/member"));
 
 function App() {
+  const { user, isLoading } = useAuth0();
+  console.log(user);
+
   return (
     <>
-      <MiniDrawer>
-        <Router>
-          <Suspense fallback={<h4>Loading....</h4>}>
-            <Routes>
-              <Route path="/" element={<Member />}></Route>
-            </Routes>
-          </Suspense>
-        </Router>
-      </MiniDrawer>
+      {isLoading ? (
+        <h4>Loading...</h4>
+      ) : (
+        <MiniDrawer user={user}>
+          <Router>
+            <Suspense fallback={<h4>Loading....</h4>}>
+              <Routes>
+                <Route path="/" element={<Member />}></Route>
+              </Routes>
+            </Suspense>
+          </Router>
+        </MiniDrawer>
+      )}
     </>
   );
 }
