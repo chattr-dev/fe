@@ -18,6 +18,7 @@ import ListItemText from "@mui/material/ListItemText";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuth0 } from "@auth0/auth0-react";
 import { User } from "@auth0/auth0-spa-js";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 const drawerWidth = 240;
 
@@ -126,9 +127,14 @@ export default function MiniDrawer(props: {
           <Typography style={{ flex: 1 }} variant="h6" noWrap component="div">
             Fringed Lizard Consulting
           </Typography>
-          <Typography variant="body1" noWrap component="div">
-            {props?.user?.email}
-          </Typography>
+          <div>
+            <ListItem>
+              <ListItemIcon sx={{ minWidth: "30px" }}>
+                <AccountCircleIcon sx={{ color: "white" }} />
+              </ListItemIcon>
+              <ListItemText primary={props?.user?.email} />
+            </ListItem>
+          </div>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>

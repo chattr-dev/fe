@@ -1,14 +1,27 @@
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import React, { Suspense, lazy, useEffect } from "react";
+import React, { Suspense, lazy } from "react";
 import { withAuthenticationRequired, useAuth0 } from "@auth0/auth0-react";
 import MiniDrawer from "./components/drawer";
+import { Socket } from "phoenix";
 
 const Member = lazy(() => import("./pages/member"));
 
 function App() {
   const { user, isLoading } = useAuth0();
-  console.log(user);
+  const socket = new Socket("ws://localhost:4000/socket");
+
+  socket.connect();
+
+  let channel = socket.channel("user:123", {});
+  channel
+    .join()
+    .receive("ok", (resp) => {
+      console.log("Joined successfully", resp);
+    })
+    .receive("error", (resp) => {
+      console.log("Unable to join", resp);
+    });
 
   return (
     <>
