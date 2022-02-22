@@ -9,7 +9,12 @@ const Member = lazy(() => import("./pages/member"));
 
 function App() {
   const { user, isLoading } = useAuth0();
-  const socket = new Socket("ws://localhost:4000/socket");
+
+  const socket = new Socket("ws://localhost:4000/socket", {
+    logger: (action, msg, data) => {
+      console.log(`${action}: ${msg}`, data);
+    },
+  });
 
   socket.connect();
 
@@ -17,10 +22,10 @@ function App() {
   channel
     .join()
     .receive("ok", (resp) => {
-      console.log("Joined successfully", resp);
+      console.log("Connected:", resp);
     })
     .receive("error", (resp) => {
-      console.log("Unable to join", resp);
+      console.log("Error connecting", resp);
     });
 
   return (
