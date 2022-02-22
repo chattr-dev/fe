@@ -3,30 +3,11 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import React, { Suspense, lazy } from "react";
 import { withAuthenticationRequired, useAuth0 } from "@auth0/auth0-react";
 import MiniDrawer from "./components/drawer";
-import { Socket } from "phoenix";
 
 const Member = lazy(() => import("./pages/member"));
 
 function App() {
   const { user, isLoading } = useAuth0();
-
-  const socket = new Socket("ws://localhost:4000/socket", {
-    logger: (action, msg, data) => {
-      console.log(`${action}: ${msg}`, data);
-    },
-  });
-
-  socket.connect();
-
-  let channel = socket.channel("user:123", {});
-  channel
-    .join()
-    .receive("ok", (resp) => {
-      console.log("Connected:", resp);
-    })
-    .receive("error", (resp) => {
-      console.log("Error connecting", resp);
-    });
 
   return (
     <>
