@@ -37,7 +37,7 @@ export default function Member() {
               </AccordionSummary>
               <AccordionDetails>
                 <Typography>Client: {project.client.name}</Typography>
-                <Timer />
+                <Timer projectId={project.id} />
               </AccordionDetails>
             </Accordion>
           );

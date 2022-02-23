@@ -1,6 +1,6 @@
-import { channel } from "diagnostics_channel";
 import React, { useContext } from "react";
 import { SocketContext } from "../providers/socket";
+import { UserContext } from "../providers/user";
 
 // Source of timer https://codepen.io/Basit600/pen/YzwRaRp
 const formatTime = (timer) => {
@@ -12,7 +12,7 @@ const formatTime = (timer) => {
   return `${getHours} : ${getMinutes} : ${getSeconds}`;
 };
 
-export default function Timer() {
+export default function Timer({ projectId }) {
   const {
     timer,
     isActive,
@@ -21,7 +21,7 @@ export default function Timer() {
     handlePause,
     handleResume,
     handleReset,
-  } = useTimer(0);
+  } = useTimer(0, projectId);
 
   return (
     <div className="app">
@@ -44,16 +44,17 @@ export default function Timer() {
   );
 }
 
-const useTimer = (initialState = 0) => {
+const useTimer = (initialState = 0, projectId) => {
   const [timer, setTimer] = React.useState(initialState);
   const [isActive, setIsActive] = React.useState(false);
   const [isPaused, setIsPaused] = React.useState(false);
   const countRef = React.useRef(null);
 
   const channel = useContext(SocketContext);
+  const user = useContext(UserContext);
 
   const handleStart = () => {
-    channel.push("timer_start", { foo: "bar" });
+    channel.push("timer_start", { userId: user.id, projectId });
     setIsActive(true);
     setIsPaused(true);
     countRef.current = setInterval(() => {
@@ -62,13 +63,13 @@ const useTimer = (initialState = 0) => {
   };
 
   const handlePause = () => {
-    channel.push("timer_pause", { foo: "bar" });
+    channel.push("timer_pause", { userId: user.id, projectId });
     clearInterval(countRef.current);
     setIsPaused(false);
   };
 
   const handleResume = () => {
-    channel.push("timer_resume", { foo: "bar" });
+    channel.push("timer_resume", { userId: user.id, projectId });
     setIsPaused(true);
     countRef.current = setInterval(() => {
       setTimer((timer) => timer + 1);
@@ -76,7 +77,7 @@ const useTimer = (initialState = 0) => {
   };
 
   const handleReset = () => {
-    channel.push("timer_reset", { foo: "bar" });
+    channel.push("timer_reset", { userId: user.id, projectId });
     clearInterval(countRef.current);
     setIsActive(false);
     setIsPaused(false);

@@ -6,11 +6,7 @@ export const SocketContext = createContext(null);
 
 export const SocketProvider = (props) => {
   const user = useContext(UserContext);
-  const socket = new Socket("ws://localhost:4000/socket", {
-    logger: (action, msg, data) => {
-      console.log(`${action}: ${msg}`, data);
-    },
-  });
+  const socket = new Socket("ws://localhost:4000/socket");
 
   socket.connect();
 
